@@ -1,3 +1,13 @@
-[gd_scene format=3 uid="uid://bly7xf40n50x"]
+[gd_scene load_steps=2 format=3 uid="uid://bly7xf40n50x"]
+
+[ext_resource type="PackedScene" uid="uid://dvxm5pvvpo4r1" path="res://scenes/player.tscn" id="1_dn72j"]
 
 [node name="Battle" type="Node2D"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 320.0
+offset_bottom = 184.0
+color = Color(0.65, 0.65, 0.65, 1)
+
+[node name="Player" parent="." instance=ExtResource("1_dn72j")]
+position = Vector2(104, 112)

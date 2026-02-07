@@ -15,12 +15,9 @@
 ## How to reach the objective
 - Gather animals along the way (or don't)
 - Upgrade stats through events and battles
-- [High Bar]: Collect items and armor for yourself and your companions
+- Collect items and armor for yourself and your companions
 
 ## Mechanics
-### Beginning
-- Choose your starting companion (randomized options)
-- Your player character always starts with the same stats
 ### Game Loop
 - Battle Start
 - Battle
@@ -29,7 +26,8 @@
 - Event #2
 - Repeat until final battle
 ### Battle Start
-- Encounter 1-3 enemies
+- For the first battle, encounter a starting animal with 100% chance to ask to join the player on its first turn
+- Otherwise, encounter 1-3 enemies
 - Player can have up to 3 animal companions
 - Turn order starts with the highest speed stat and goes to the lowest speed stat
 - Resolve Battle Start effects
@@ -38,6 +36,7 @@
 - Resolve start of turn effects (stun, etc.)
 - If it is the player's turn, choose which animal(s) to attack
 - Otherwise, choose which animal(s) to attack based on attack preference
+- If it is an enemy, it may offer to join the Player's group on its turn instead of attacking.  This is made more likely based on how low the enemy's health is.
 - If no enemies remain or the player dies, go to Battle Resolution
 - Resolve end of turn effects (poison, etc.)
 ### Battle Resolution
@@ -195,11 +194,6 @@
 - PA
 - Wounded: Restore full HP. Discard.
 
-### 
-- Uncommon
-- PA
-- Drained: Gain Rejuvinate 3. Discard.
-
 ### Poison Dagger
 - Rare
 - PA
@@ -228,7 +222,7 @@
 ### Leader's Whistle
 - Rare
 - P
-- Battle Start: Choose one target type for all your animals to target this battle
+- Battle Start: Increase the odds of enemy animals asking to join your party
 
 ### Arcane Stone
 - Epic
@@ -352,13 +346,17 @@
 
 # February
 - Develop Game Description and Plan
-- Create MVP
+- Develop Battle
+- Develop Crude UI and Assets
 
 # March
-- Create Smooth UI and Assets
+- Develop Event #1
+- Develop Event #2
+- Develop Smooth UI
+- Develop Nice Assets
 
 # April
+- Develop SFX 
+- Develop Music
+- Playtest and Balance
 - Market Game
-
-
-
