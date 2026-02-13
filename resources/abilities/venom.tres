@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="Ability" load_steps=8 format=3 uid="uid://bdthivqj5u4ep"]
+
+[ext_resource type="Script" uid="uid://cxid1d8pxli00" path="res://scripts/resources/ability_condition.gd" id="1_mnxqt"]
+[ext_resource type="Script" uid="uid://tvoob1gbfsk6" path="res://scripts/resources/effect.gd" id="2_dbtjg"]
+[ext_resource type="Script" uid="uid://cpnyqxlyrdkj8" path="res://scripts/resources/ability.gd" id="3_7afc8"]
+[ext_resource type="Script" uid="uid://csrds5m07adnb" path="res://scripts/resources/effects/apply_status_effect.gd" id="3_i6usq"]
+[ext_resource type="Resource" uid="uid://bucifuquynswf" path="res://resources/status_effects/poison.tres" id="4_xo1uk"]
+
+[sub_resource type="Resource" id="Resource_ejn0s"]
+script = ExtResource("1_mnxqt")
+target_unit = 1
+operation = 2
+metadata/_custom_type_script = "uid://cxid1d8pxli00"
+
+[sub_resource type="Resource" id="Resource_geifv"]
+script = ExtResource("3_i6usq")
+status_effect = ExtResource("4_xo1uk")
+metadata/_custom_type_script = "uid://csrds5m07adnb"
+
+[resource]
+script = ExtResource("3_7afc8")
+trigger = 4
+condition = Array[ExtResource("1_mnxqt")]([SubResource("Resource_ejn0s")])
+targets = 6
+effects = Array[ExtResource("2_dbtjg")]([SubResource("Resource_geifv")])
+metadata/_custom_type_script = "uid://cpnyqxlyrdkj8"

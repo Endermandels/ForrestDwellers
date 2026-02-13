@@ -55,10 +55,10 @@
 ## Stats
 - HP (reach critical HP at 5% max HP)
 - ATK (temporarily reduced by 1 at critical HP)
-- ARMOR (reduced on attack and does not regenerate during battle)
+- ARM (reduced on attack and does not regenerate during battle)
 - SPD (temporarily reduced by 1 at critical HP)
 - MP (reduced when using a special ability or for a passive ability)
-- ITEM (how many Items this unit can carry)
+- ITM (how many Items this unit can carry)
 
 ## Start of Turn Effects (in order)
 - Stun X: Skip action phase. Reduce X by 1. When X is 0, remove.
@@ -269,7 +269,7 @@
 - MP    8
 - ITEM  1
 - Alternate 2: Gain Fly 1
-- Passive: While flying, this unit cannot be targeted
+- Passive: CONDITION(flying), this unit cannot be targeted
 
 ### Snake
 - Starter animal
@@ -280,7 +280,7 @@
 - SPD   3
 - MP    4
 - ITEM  1
-- On Hit: If their ARMOR is 0, spend 1 MP to give that target Poison 1
+- On Hit: CONDITION(Enemy.ARMOR == 0), spend 1 MP to give that target Poison 1
 - Wounded: Remove all status effects on this animal and gain 2 SPD
 
 ### Turtle
@@ -292,8 +292,8 @@
 - SPD   0
 - MP    3
 - ITEM  1
-- Turn Start: If this unit has ARMOR, Spend 1 MP to gain an extra strike this turn
-- Turn Start: If this unit has no ARMOR, gain 1 SPD
+- Turn Start: CONDITION(self.ARMOR > 0) && CONDITION(self.HP == self.Base_HP), Spend 1 MP to gain an extra strike this turn
+- Turn Start: CONDITION(self.ARMOR == 0), gain 1 SPD
 
 ### Porcupine
 - Starter animal
@@ -329,7 +329,7 @@
 - MP    2
 - ITEM  1
 - Battle Start: Spend 1 MP to give ground enemies Intimidate 1
-- On Hit: If the target's HP is full, give that target Stun 1
+- On Hit: CONDITION(Enemy.HP == Enemy.Base_HP), give that target Stun 1
 
 ### Dragon
 - Targets: Random
