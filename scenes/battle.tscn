@@ -4,8 +4,9 @@
 [ext_resource type="Script" uid="uid://bj5bmfq6f42fh" path="res://scripts/scenes/battle.gd" id="1_th188"]
 [ext_resource type="PackedScene" uid="uid://87vfoaq2mtic" path="res://components/input_component.tscn" id="3_p1qf1"]
 
-[node name="Battle" type="Node2D"]
+[node name="Battle" type="Node2D" node_paths=PackedStringArray("input_cmp")]
 script = ExtResource("1_th188")
+input_cmp = NodePath("InputComponent")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_right = 320.0

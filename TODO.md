@@ -275,7 +275,7 @@
 - Starter animal
 - Targets: Highest Max HP
 - HP    8
-- ATK   2
+- ATK   1
 - ARMOR 0
 - SPD   3
 - MP    4
@@ -292,7 +292,7 @@
 - SPD   0
 - MP    3
 - ITEM  1
-- Turn Start: CONDITION(self.ARMOR > 0) && CONDITION(self.HP == self.Base_HP), Spend 1 MP to gain an extra strike this turn
+- Turn Start: CONDITION(self.ARMOR > 0), Spend 1 MP to gain an extra strike this turn
 - Turn Start: CONDITION(self.ARMOR == 0), gain 1 SPD
 
 ### Porcupine

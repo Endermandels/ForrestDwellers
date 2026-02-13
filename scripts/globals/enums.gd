@@ -27,9 +27,13 @@ enum Trigger {
 }
 
 enum BattleState {
-    BEFORE_BATTLE,
     BATTLE_START,
     TURN_START,
     ACTION,
     TURN_END
+}
+
+enum ConditionConjunction {
+    AND,
+    OR,
 }

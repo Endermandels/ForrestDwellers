@@ -8,6 +8,7 @@
 script = ExtResource("2_at5yr")
 dmg_change = 1
 dmg_max_is_stacks = true
+pure = true
 metadata/_custom_type_script = "uid://dmsoeob5xvh4b"
 
 [resource]

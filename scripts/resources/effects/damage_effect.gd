@@ -7,10 +7,10 @@ class_name DamageEffect
 @export var dmg_max_is_stacks: bool = false ## whether the max damage dealt is equal to the number of stacks left
 @export var pure: bool = false ## whether to ignore armor
 
-func apply(_source: Stats, targets: Array[Stats], stacks: int) -> void:
-    var dmg_to_apply = clampi(dmg + (dmg_per_stack * stacks), 0, stacks if dmg_max_is_stacks else int(INF))
-
-    for t: Stats in targets:
-        t.take_dmg(dmg_to_apply, pure)
-
-    dmg = clampi(dmg + dmg_change, 0, int(INF))
+func apply(_source: Stats, target: Stats, stacks: int = 0) -> void:
+    var dmg_to_apply = dmg + (dmg_per_stack * stacks)
+    dmg_to_apply = max(dmg_to_apply, 0)
+    if dmg_max_is_stacks:
+        dmg_to_apply = min(dmg_to_apply, stacks)
+    target.take_dmg(dmg_to_apply, pure)
+    dmg = max(dmg + dmg_change, 0)

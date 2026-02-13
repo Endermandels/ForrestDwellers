@@ -7,4 +7,4 @@ class_name StatusEffect
 
 func apply(stats: Stats) -> void:
     for e: Effect in effects:
-        e.apply(null, [stats], stacks)
+        e.apply(null, stats, stacks)

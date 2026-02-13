@@ -1,8 +1,11 @@
-[gd_resource type="Resource" script_class="GameState" load_steps=3 format=3 uid="uid://2ehsgcic843h"]
+[gd_resource type="Resource" script_class="GameState" load_steps=5 format=3 uid="uid://2ehsgcic843h"]
 
 [ext_resource type="Script" uid="uid://cuxqv41brtwff" path="res://scripts/resources/stats.gd" id="1_642xj"]
 [ext_resource type="Script" uid="uid://bbla3vhnhe2rh" path="res://scripts/resources/game_state.gd" id="1_ljf37"]
+[ext_resource type="Resource" uid="uid://cxr8q053unjl1" path="res://resources/stats/player.tres" id="2_v4iyv"]
+[ext_resource type="Resource" uid="uid://vyk558235nci" path="res://resources/stats/snake.tres" id="3_j44e5"]
 
 [resource]
 script = ExtResource("1_ljf37")
+all_units = Array[ExtResource("1_642xj")]([ExtResource("2_v4iyv"), ExtResource("3_j44e5")])
 metadata/_custom_type_script = "uid://bbla3vhnhe2rh"

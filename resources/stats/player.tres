@@ -1,11 +1,15 @@
-[gd_resource type="Resource" script_class="Stats" load_steps=3 format=3 uid="uid://cxr8q053unjl1"]
+[gd_resource type="Resource" script_class="Stats" load_steps=4 format=3 uid="uid://cxr8q053unjl1"]
 
 [ext_resource type="Script" uid="uid://cpnyqxlyrdkj8" path="res://scripts/resources/ability.gd" id="1_dlmi8"]
+[ext_resource type="Resource" uid="uid://bfp2ittujtucv" path="res://resources/abilities/howl.tres" id="2_donhl"]
 [ext_resource type="Script" uid="uid://cuxqv41brtwff" path="res://scripts/resources/stats.gd" id="2_jwtsk"]
 
 [resource]
 script = ExtResource("2_jwtsk")
+name_id = "Player"
 is_player = true
+is_enemy = false
+abilities = Array[ExtResource("1_dlmi8")]([ExtResource("2_donhl"), ExtResource("2_donhl")])
 base_hp = 20
 base_itm = 8
 metadata/_custom_type_script = "uid://cuxqv41brtwff"

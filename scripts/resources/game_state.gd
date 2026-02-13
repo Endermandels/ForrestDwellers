@@ -10,5 +10,4 @@ enum Scenes {
 @export_group("Battle")
 @export var turn: int = 0
 @export var battle_state: Enums.BattleState = Enums.BattleState.BATTLE_START
-@export var battle_participants: Array[Stats] = []
-var previous_battle_state: Enums.BattleState = Enums.BattleState.BEFORE_BATTLE
+@export var all_units: Array[Stats] = []
