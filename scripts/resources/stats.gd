@@ -5,7 +5,7 @@ class_name Stats
 @export var is_player: bool = false
 @export var is_enemy: bool = true
 @export var can_be_starter: bool = false
-@export var targets: Enums.Target = Enums.Target.RANDOM
+@export var target_rule: TargetRule = null
 @export var abilities: Array[Ability]
 
 @export_group("Base Stats")
@@ -23,7 +23,14 @@ var spd: int = base_spd
 var mp: int = base_mp
 var itm: int = base_itm
 
+var exhausted: bool = false ## whether this unit has already attacked this round and thus to skip its turn if it gets reordered
+var wounded: bool = false ## whether to activate wounded abilities
+
+var abilities_sorted: Dictionary = {} ## sorted by trigger
 var status_effects: Array[StatusEffect]
+
+var idx: int = -1 ## Index in units_queue of this unit
+var engaged_enemy: Stats = null ## The enemy this unit is attacking or being attacked by
 
 func _to_string() -> String:
     var res = [
@@ -36,26 +43,3 @@ func _to_string() -> String:
         , "ITM: \t%d" % itm
     ]
     return "\n- ".join(res)
-
-func init_stats() -> void:
-    hp = base_hp
-    atk = base_atk
-    arm = base_arm
-    spd = base_spd
-    mp = base_mp
-    itm = base_itm
-
-func take_dmg(dmg: int, pure: bool = false) -> void:
-    print("* [%s] received %d%sDMG" % [name_id, dmg, " Pure " if pure else " "])
-    var remaining_dmg = dmg
-    if not pure:
-        remaining_dmg = max(dmg - arm, 0)
-        arm = max(arm - dmg, 0)
-    hp = max(hp - remaining_dmg, 0)
-
-func use_mp(amount: int) -> void:
-    print("* [%s] paid %d MP" % [name_id, amount])
-    mp = max(mp - amount, 0)
-
-func add_status_effect(status_effect: StatusEffect) -> void:
-    status_effects.append(status_effect)

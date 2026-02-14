@@ -1,7 +1,7 @@
 extends Node
 # Global
 
-enum Target {
+enum TargetBias {
     RANDOM,
     HIGH_BASE_HP,
     HIGH_HP,
@@ -29,11 +29,19 @@ enum Trigger {
 enum BattleState {
     BATTLE_START,
     TURN_START,
-    ACTION,
-    TURN_END
+    ATTACK,
+    ATTACK_RESOLUTION,
+    TURN_END,
 }
 
 enum ConditionConjunction {
     AND,
     OR,
+}
+
+enum AbilityCostType {
+    HP,
+    ATK,
+    SPD,
+    MP,
 }

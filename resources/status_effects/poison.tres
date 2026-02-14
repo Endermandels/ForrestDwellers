@@ -12,6 +12,7 @@ pure = true
 metadata/_custom_type_script = "uid://dmsoeob5xvh4b"
 
 [resource]
+resource_local_to_scene = true
 script = ExtResource("1_bf4sn")
 effects = Array[ExtResource("1_7dgcr")]([SubResource("Resource_eikfg")])
 metadata/_custom_type_script = "uid://d3so4r078gt1m"

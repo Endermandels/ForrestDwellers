@@ -345,7 +345,7 @@
 - Passive: Immune to Stench
 
 # February
-- Develop Game Description and Plan
+x Develop Game Description and Plan
 - Develop Battle
 - Develop Crude UI and Assets
 

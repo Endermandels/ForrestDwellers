@@ -5,10 +5,10 @@
 [ext_resource type="Script" uid="uid://cuxqv41brtwff" path="res://scripts/resources/stats.gd" id="2_ya3jg"]
 
 [resource]
+resource_local_to_scene = true
 script = ExtResource("2_ya3jg")
 name_id = "Snake"
 can_be_starter = true
-targets = 2
 abilities = Array[ExtResource("1_lptdg")]([ExtResource("2_47i2v")])
 base_hp = 8
 base_spd = 3

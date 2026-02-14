@@ -5,11 +5,12 @@
 [ext_resource type="Script" uid="uid://cuxqv41brtwff" path="res://scripts/resources/stats.gd" id="2_jwtsk"]
 
 [resource]
+resource_local_to_scene = true
 script = ExtResource("2_jwtsk")
 name_id = "Player"
 is_player = true
 is_enemy = false
-abilities = Array[ExtResource("1_dlmi8")]([ExtResource("2_donhl"), ExtResource("2_donhl")])
+abilities = Array[ExtResource("1_dlmi8")]([ExtResource("2_donhl")])
 base_hp = 20
 base_itm = 8
 metadata/_custom_type_script = "uid://cuxqv41brtwff"
