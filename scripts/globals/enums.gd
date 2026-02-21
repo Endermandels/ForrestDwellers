@@ -32,6 +32,7 @@ enum BattleState {
     ATTACK,
     ATTACK_RESOLUTION,
     TURN_END,
+    BATTLE_RESOLUTION,
 }
 
 enum ConditionConjunction {

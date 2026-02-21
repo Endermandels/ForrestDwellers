@@ -22,14 +22,17 @@ func apply(_source: Stats, target: Stats, stacks: int = 0) -> void:
 
 	target.hp = max(target.hp - remaining_dmg, 0) # Reduce HP by remaining DMG
 
-	if dmg_up_to_stacks:
-		dmg = min(dmg + 1, stacks) # Increase DMG up to stacks
+	if target.hp <= 0:
+		target.is_dead = true # Target is dead
 
 	# Check for Wounded trigger
-	if target.hp < float(target.base_hp) / 2:
+	if not target.is_dead and target.hp < float(target.base_hp) / 2:
 		# Check that Wounded has not already been triggered
-		if not target.wounded:
-			target.wounded = true
+		if not target.is_wounded:
+			target.is_wounded = true
 			# Trigger Wounded Abilities
 			for a in target.abilities[Enums.Trigger.WOUNDED]:
 				game_state.abilities_queue.insert(game_state.cur_ability_idx + 1, a)
+
+	if dmg_up_to_stacks:
+		dmg = min(dmg + 1, stacks) # Increase DMG up to stacks

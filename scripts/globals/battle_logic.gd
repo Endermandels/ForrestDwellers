@@ -23,15 +23,6 @@ func print_stats() -> void:
 	if game_state.cur_unit:
 		print(game_state.cur_unit.to_string_custom())
 
-# ## Remove all dead units from units_queue
-# func remove_dead_units() -> void:
-# 	var to_remove: Array[int] = []
-# 	for i in range(game_state.units_queue.size()):
-# 		if game_state.units_queue[i].is_dead():
-# 			to_remove.push_front(i)
-# 	for i in to_remove:
-# 		game_state.units_queue.remove_at(i)
-
 ## Sort units_queue by SPD
 func sort_units_queue() -> void:
 	# TODO: Implement the following:
@@ -42,7 +33,6 @@ func sort_units_queue() -> void:
 
 	print("* Sort units by SPD")
 	game_state.units_queue.sort_custom(func (a: Stats, b: Stats): return a.spd > b.spd)
-	game_state.units_sorted = true
 
 ## Populate abilities_queue with [trigger] abilities
 func populate_abilities_queue(trigger: Enums.Trigger, units: Array[Stats]) -> void:
@@ -69,6 +59,8 @@ func stats_init(stats: Stats) -> void:
 	stats.mp = stats.base_mp
 	stats.itm = stats.base_itm
 	stats_sort_abilities(stats)
+	if stats.is_player:
+		game_state.player = stats
 
 ## Sort abilities by trigger
 func stats_sort_abilities(stats: Stats) -> void:
@@ -80,15 +72,11 @@ func stats_sort_abilities(stats: Stats) -> void:
 
 ## Exhaust [stats]
 func stats_exhaust(stats: Stats) -> void:
-	stats.exhausted = true
+	stats.is_exhausted = true
 
 ## Remove exhaust on [stats]
 func stats_refresh(stats: Stats) -> void:
-	stats.exhausted = false
-
-## Returns whether [stats] is dead
-func stats_is_dead(stats: Stats) -> bool:
-	return stats.hp <= 0
+	stats.is_exhausted = false
 
 ## Returns whether [stats] meet all [ability] conditions 
 func stats_meet_ability_conditions(stats: Stats, ability: Ability, enemy: Stats = null) -> bool:
@@ -122,7 +110,32 @@ func stats_apply_ability_effects(stats: Stats, ability: Ability, units_queue: Ar
 #endregion
 
 #region State Machine
+## Returns whether a battle resolution has been reached
+func check_battle_resolution() -> bool:
+	# If the player dies at any point, end the game
+	if game_state.player.is_dead:
+		game_state.battle_state = Enums.BattleState.BATTLE_RESOLUTION
+		print("! Player died")
+		print("~~~ Battle Resolution ~~~")
+		print("~~~ GAME OVER ~~~")
+	# Otherwise, if all the enemies are dead at any point, end the game
+	else:
+		var won: bool = true
+		for u in game_state.units_queue:
+			if u.is_enemy and not u.is_dead:
+				won = false
+		if game_state.cur_unit and game_state.cur_unit.is_enemy and not game_state.cur_unit.is_dead:
+			won = false
+		if won:
+			game_state.battle_state = Enums.BattleState.BATTLE_RESOLUTION
+			print("! Enemies vanquished")
+			print("~~~ Battle Resolution ~~~")
+			print("~~~ YOU WIN ~~~")
+	return game_state.battle_state == Enums.BattleState.BATTLE_RESOLUTION
+
 func step_battle_start() -> void:
+	if check_battle_resolution(): return
+
 	if game_state.abilities_queue.size() > 0:
 		var ability: Ability = game_state.abilities_queue.pop_front()
 		var unit: Stats = ability.unit_ref
@@ -135,6 +148,8 @@ func step_battle_start() -> void:
 		populate_abilities_queue(Enums.Trigger.TURN_START, game_state.units_queue)
 
 func step_turn_start() -> void:
+	if check_battle_resolution(): return
+	
 	if game_state.abilities_queue.size() > 0:
 		var ability: Ability = game_state.abilities_queue.pop_front()
 		var unit: Stats = ability.unit_ref
@@ -148,17 +163,19 @@ func step_turn_start() -> void:
 		print("~~~ [%s] Attack ~~~" % game_state.cur_unit)
 
 func step_attack() -> void:
+	if check_battle_resolution(): return
+	
 	if game_state.attack_queue.size() > 0:
 		var engaged_enemy: Stats = game_state.attack_queue.pop_front()
 		var unit: Stats = game_state.cur_unit
 
-		var enemy_wounded_prev = engaged_enemy.wounded
+		var enemy_wounded_prev = engaged_enemy.is_wounded
 		var dmg_effect: DamageEffect = DamageEffect.new()
 		dmg_effect.dmg = unit.atk
 		dmg_effect.apply(unit, engaged_enemy)
 
 		# Trigger Wounded On Hurt Abilities
-		if not enemy_wounded_prev and engaged_enemy.wounded:
+		if not enemy_wounded_prev and engaged_enemy.is_wounded:
 			for a in engaged_enemy.abilities[Enums.Trigger.WOUNDED_ON_HURT]:
 				game_state.abilities_queue.insert(game_state.cur_ability_idx + 1, a)
 
@@ -168,14 +185,16 @@ func step_attack() -> void:
 		game_state.battle_state = Enums.BattleState.ATTACK_RESOLUTION
 	else:
 		game_state.battle_state = Enums.BattleState.TURN_END
-		if not stats_is_dead(game_state.cur_unit):
+		print("~~~ [%s] Turn End ~~~" % game_state.cur_unit)
+		if not game_state.cur_unit.is_dead:
 			game_state.units_queue.append(game_state.cur_unit)
 		game_state.cur_unit = null
-		print("~~~ [%s] Turn End ~~~" % game_state.cur_unit)
-		stats_exhaust(game_state.cur_unit)
+		# stats_exhaust(game_state.cur_unit) # TODO: Implement
 		populate_abilities_queue(Enums.Trigger.TURN_END, game_state.units_queue)
 
 func step_attack_resolution() -> void:
+	if check_battle_resolution(): return
+	
 	if game_state.abilities_queue.size() > 0:
 		var ability: Ability = game_state.abilities_queue.pop_front()
 		var unit: Stats = ability.unit_ref
@@ -187,8 +206,11 @@ func step_attack_resolution() -> void:
 func step_turn_end() -> void:
 	step_battle_start()
 
+func step_battle_resolution() -> void:
+	pass # TODO: Implement
+
 func advance_battle_state(_input_cmp: InputComponent) -> void:
-	if not game_state: return
+	if not game_state: return # Make sure game_state is initialized
 
 	if game_state.battle_state == Enums.BattleState.BATTLE_START:
 		step_battle_start()
@@ -200,6 +222,8 @@ func advance_battle_state(_input_cmp: InputComponent) -> void:
 		step_attack_resolution()
 	elif game_state.battle_state == Enums.BattleState.TURN_END:
 		step_turn_end()
+	elif game_state.battle_state == Enums.BattleState.BATTLE_RESOLUTION:
+		step_battle_resolution()
 	else:
 		assert(false, "Unknown battle state: %s" % str(game_state.battle_state))
 #endregion

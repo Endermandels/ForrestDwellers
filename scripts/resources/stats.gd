@@ -25,9 +25,10 @@ var mp: int = base_mp
 var itm: int = base_itm
 
 # Conditions
-var exhausted: bool = false ## whether this unit has already attacked this round and thus to skip its turn if it gets reordered
-var wounded: bool = false ## whether this unit is wounded
-var stunned: bool = false ## whether this unit is stunned
+var is_exhausted: bool = false ## whether this unit has already attacked this round and thus to skip its turn if it gets reordered
+var is_wounded: bool = false ## whether this unit is is_wounded
+var is_stunned: bool = false ## whether this unit is is_stunned
+var is_dead: bool = false ## whether this unit is is_dead
 
 # Abilities
 var abilities_sorted: Dictionary = {} ## key: Enums.Trigger, value: Array[Ability]
