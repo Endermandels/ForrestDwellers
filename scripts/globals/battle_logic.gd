@@ -13,24 +13,28 @@ func init() -> void:
 	
 	print("~~~ Battle Start ~~~")
 	init_units_queue()
-	populate_abilities_queue(Enums.Trigger.BATTLE_START)
+	sort_units_queue()
+	populate_abilities_queue(Enums.Trigger.BATTLE_START, game_state.units_queue)
 
 ## Print all units stats
 func print_stats() -> void:
 	for unit: Stats in game_state.units_queue:
-		print(unit)
+		print(unit.to_string_custom())
+	if game_state.cur_unit:
+		print(game_state.cur_unit.to_string_custom())
 
-## Remove all dead units from units_queue
-func remove_dead_units() -> void:
-	var to_remove: Array[int] = []
-	for i in range(game_state.units_queue.size()):
-		if game_state.units_queue[i].is_dead():
-			to_remove.push_front(i)
-	for i in to_remove:
-		game_state.units_queue.remove_at(i)
+# ## Remove all dead units from units_queue
+# func remove_dead_units() -> void:
+# 	var to_remove: Array[int] = []
+# 	for i in range(game_state.units_queue.size()):
+# 		if game_state.units_queue[i].is_dead():
+# 			to_remove.push_front(i)
+# 	for i in to_remove:
+# 		game_state.units_queue.remove_at(i)
 
 ## Sort units_queue by SPD
 func sort_units_queue() -> void:
+	# TODO: Implement the following:
 	# Whenever a unit's SPD changes, re-sort the units_queue
 	# When a unit has attacked, it is exhausted and cannot start its turn again until the next round
 	# So, when a unit who has attacked gets its SPD lowered, and thus goes down the queue,
@@ -38,37 +42,24 @@ func sort_units_queue() -> void:
 
 	print("* Sort units by SPD")
 	game_state.units_queue.sort_custom(func (a: Stats, b: Stats): return a.spd > b.spd)
-	game_state.player_units = []
-	game_state.enemy_units = []
-	var i: int = 0
-	for u in game_state.units_queue:
-		u.idx = i
-		if not u.is_dead():
-			if u.is_enemy:
-				game_state.enemy_units.append(i)
-			else:
-				game_state.player_units.append(i)
-		i += 1
 	game_state.units_sorted = true
 
 ## Populate abilities_queue with [trigger] abilities
-func populate_abilities_queue(trigger: Enums.Trigger) -> void:
+func populate_abilities_queue(trigger: Enums.Trigger, units: Array[Stats]) -> void:
+	var trigger_name = Enums.Trigger.keys()[trigger] # have to convert trigger to str using this line
 	print("* Populate Abilities queue")
-	for u in game_state.units_queue:
-		for a in u.abilities_sorted[trigger]:
-			var dict = {
-				"unit": u,
-				"ability": a,
-			}
-			game_state.abilities_queue.append(dict)
+	for u in units:
+		for a in u.abilities_sorted[trigger_name]:
+			game_state.abilities_queue.append(a)
 
-## Call each unit's init function in units_queue
+## Init each unit's stats
 func init_units_queue() -> void:
 	for u in game_state.units_queue:
-		u.init()
+		stats_init(u)
 #endregion
 
 #region Stats
+## TODO: This will reset a unit's stats. To make stats persistent, this will need to change
 ## Init stats to base values
 func stats_init(stats: Stats) -> void:
 	stats.hp = stats.base_hp
@@ -77,69 +68,28 @@ func stats_init(stats: Stats) -> void:
 	stats.spd = stats.base_spd
 	stats.mp = stats.base_mp
 	stats.itm = stats.base_itm
+	stats_sort_abilities(stats)
 
 ## Sort abilities by trigger
 func stats_sort_abilities(stats: Stats) -> void:
 	for trigger in Enums.Trigger:
-		stats.abilities_sorted[trigger] = []
+		stats.abilities_sorted[str(trigger)] = []
 	for a in stats.abilities:
-		stats.abilities_sorted[a.trigger].append(a)
+		for trigger in a.triggers:
+			stats.abilities_sorted[str(trigger)].append(a)
 
-## Deal [dmg] to [stats]. 
-## [pure] determines whether to ignore ARM.
-## [on_hurt] determines whether the DMG was received via an attack instead of a status effect or something else.
-func stats_take_dmg(stats: Stats, dmg: int, pure: bool = false, on_hurt: bool = false) -> void:
-	print("* [%s] received %d%sDMG" % [stats.name_id, dmg, " Pure " if pure else " "])
-	var remaining_dmg = dmg
+## Exhaust [stats]
+func stats_exhaust(stats: Stats) -> void:
+	stats.exhausted = true
 
-	if not pure:
-		remaining_dmg = max(dmg - stats.arm, 0)
-		stats.arm = max(stats.arm - dmg, 0)
-
-	stats.hp = max(stats.hp - remaining_dmg, 0)
-
-	if stats.hp < float(stats.base_hp) / 2:
-		if not stats.wounded:
-			stats.wounded = true
-			# Trigger wounded abilities
-			for a in stats.abilities[Enums.Trigger.WOUNDED]:
-				game_state.abilities_queue.insert(game_state.cur_ability_idx + 1, [stats.idx, a])
-			if on_hurt:
-				# Trigger wounded on hurt abilities
-				for a in stats.abilities[Enums.Trigger.WOUNDED_ON_HURT]:
-					game_state.abilities_queue.insert(game_state.cur_ability_idx + 1, [stats.idx, a])
-
-## Reduce [amount] of [stats] MP
-func stats_reduce_mp(stats: Stats, amount: int) -> void:
-	stats.mp = max(stats.mp - amount, 0)
-
-## Add [status_effect] to [stats]
-func stats_add_status_effect(stats: Stats, status_effect: StatusEffect) -> void:
-	stats.status_effects.append(status_effect)
-
-## Returns index of enemy unit [stats] is targeting
-func stats_get_target(stats: Stats, enemy_units: Array[int], units_queue: Array[Stats]) -> int:
-	var res: int = -1
-
-	if stats.target_bias == Enums.TargetBias.RANDOM:
-		res = enemy_units.pick_random()
-	elif stats.target_bias == Enums.TargetBias.HIGH_HP:
-		var highest: Stats = null
-		for i in enemy_units:
-			# Since units_queue is sorted by SPD, reward higher SPD by attacking lower SPD on a tie
-			if not highest or units_queue[i].hp >= highest.hp:
-				res = i
-				highest = units_queue[i]
-	else:
-		print("TODO: Implement Target Type [%s]" % stats.target_bias)
-	
-	return res
+## Remove exhaust on [stats]
+func stats_refresh(stats: Stats) -> void:
+	stats.exhausted = false
 
 ## Returns whether [stats] is dead
 func stats_is_dead(stats: Stats) -> bool:
 	return stats.hp <= 0
 
-#region Ability
 ## Returns whether [stats] meet all [ability] conditions 
 func stats_meet_ability_conditions(stats: Stats, ability: Ability, enemy: Stats = null) -> bool:
 	var res = true
@@ -170,28 +120,24 @@ func stats_apply_ability_effects(stats: Stats, ability: Ability, units_queue: Ar
 		for t in e.target_rule.get_targets(stats, units_queue):
 			e.apply(stats, t)
 #endregion
-#endregion
 
 #region State Machine
 func step_battle_start() -> void:
 	if game_state.abilities_queue.size() > 0:
-		var info: Dictionary = game_state.abilities_queue.pop_front()
-		var unit: Stats = info["unit"]
-		var ability: Ability = info["ability"]
+		var ability: Ability = game_state.abilities_queue.pop_front()
+		var unit: Stats = ability.unit_ref
 
 		stats_apply_ability_effects(unit, ability, game_state.units_queue)
 	else:
 		game_state.battle_state = Enums.BattleState.TURN_START
-		game_state.battle_round = 0
-		game_state.cur_unit = game_state.units_queue[0]
+		game_state.cur_unit = game_state.units_queue.pop_front()
 		print("~~~ [%s] Turn Start ~~~" % game_state.cur_unit)
-		populate_abilities_queue(Enums.Trigger.TURN_START)
+		populate_abilities_queue(Enums.Trigger.TURN_START, game_state.units_queue)
 
 func step_turn_start() -> void:
 	if game_state.abilities_queue.size() > 0:
-		var info: Dictionary = game_state.abilities_queue.pop_front()
-		var unit: Stats = info["unit"]
-		var ability: Ability = info["ability"]
+		var ability: Ability = game_state.abilities_queue.pop_front()
+		var unit: Stats = ability.unit_ref
 
 		stats_apply_ability_effects(unit, ability, game_state.units_queue)
 	else:
@@ -206,21 +152,33 @@ func step_attack() -> void:
 		var engaged_enemy: Stats = game_state.attack_queue.pop_front()
 		var unit: Stats = game_state.cur_unit
 
-		stats_take_dmg(engaged_enemy, unit.atk, false, true)
+		var enemy_wounded_prev = engaged_enemy.wounded
+		var dmg_effect: DamageEffect = DamageEffect.new()
+		dmg_effect.dmg = unit.atk
+		dmg_effect.apply(unit, engaged_enemy)
 
-		populate_abilities_queue(Enums.Trigger.ON_HIT)
-		populate_abilities_queue(Enums.Trigger.ON_HURT)
+		# Trigger Wounded On Hurt Abilities
+		if not enemy_wounded_prev and engaged_enemy.wounded:
+			for a in engaged_enemy.abilities[Enums.Trigger.WOUNDED_ON_HURT]:
+				game_state.abilities_queue.insert(game_state.cur_ability_idx + 1, a)
+
+		populate_abilities_queue(Enums.Trigger.ON_HIT, [unit])
+		populate_abilities_queue(Enums.Trigger.ON_HURT, [engaged_enemy])
+
 		game_state.battle_state = Enums.BattleState.ATTACK_RESOLUTION
 	else:
 		game_state.battle_state = Enums.BattleState.TURN_END
+		if not stats_is_dead(game_state.cur_unit):
+			game_state.units_queue.append(game_state.cur_unit)
+		game_state.cur_unit = null
 		print("~~~ [%s] Turn End ~~~" % game_state.cur_unit)
-		populate_abilities_queue(Enums.Trigger.TURN_END)
+		stats_exhaust(game_state.cur_unit)
+		populate_abilities_queue(Enums.Trigger.TURN_END, game_state.units_queue)
 
 func step_attack_resolution() -> void:
 	if game_state.abilities_queue.size() > 0:
-		var info: Dictionary = game_state.abilities_queue.pop_front()
-		var unit: Stats = info["unit"]
-		var ability: Ability = info["ability"]
+		var ability: Ability = game_state.abilities_queue.pop_front()
+		var unit: Stats = ability.unit_ref
 
 		stats_apply_ability_effects(unit, ability, game_state.units_queue)
 	else:
@@ -238,9 +196,10 @@ func advance_battle_state(_input_cmp: InputComponent) -> void:
 		step_turn_start()
 	elif game_state.battle_state == Enums.BattleState.ATTACK:
 		step_attack()
+	elif game_state.battle_state == Enums.BattleState.ATTACK_RESOLUTION:
+		step_attack_resolution()
 	elif game_state.battle_state == Enums.BattleState.TURN_END:
 		step_turn_end()
 	else:
-		push_error("Unknown battle state: %s" % str(game_state.battle_state))
-		get_tree().quit()
+		assert(false, "Unknown battle state: %s" % str(game_state.battle_state))
 #endregion

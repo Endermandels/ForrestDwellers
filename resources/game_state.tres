@@ -7,5 +7,5 @@
 
 [resource]
 script = ExtResource("1_ljf37")
-all_units = Array[ExtResource("1_642xj")]([ExtResource("2_v4iyv"), ExtResource("3_j44e5")])
+units_queue = Array[ExtResource("1_642xj")]([ExtResource("2_v4iyv"), ExtResource("3_j44e5")])
 metadata/_custom_type_script = "uid://bbla3vhnhe2rh"

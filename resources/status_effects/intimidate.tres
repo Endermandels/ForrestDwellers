@@ -1,9 +1,21 @@
-[gd_resource type="Resource" script_class="StatusEffect" load_steps=3 format=3 uid="uid://6plxyojw3xqt"]
+[gd_resource type="Resource" script_class="StatusEffect" load_steps=7 format=3 uid="uid://6plxyojw3xqt"]
 
 [ext_resource type="Script" uid="uid://tvoob1gbfsk6" path="res://scripts/resources/effect.gd" id="1_0olkb"]
 [ext_resource type="Script" uid="uid://d3so4r078gt1m" path="res://scripts/resources/status_effect.gd" id="2_m0t0m"]
+[ext_resource type="Script" uid="uid://b7q1hnywkunal" path="res://scripts/resources/effects/weaken_effect.gd" id="2_p3s85"]
+[ext_resource type="Script" uid="uid://ctcvjr0gd1qjn" path="res://scripts/resources/target_rules/target_all_enemies.gd" id="3_7o0jt"]
+
+[sub_resource type="Resource" id="Resource_cr5n3"]
+script = ExtResource("3_7o0jt")
+metadata/_custom_type_script = "uid://ctcvjr0gd1qjn"
+
+[sub_resource type="Resource" id="Resource_asp74"]
+script = ExtResource("2_p3s85")
+target_rule = SubResource("Resource_cr5n3")
+metadata/_custom_type_script = "uid://b7q1hnywkunal"
 
 [resource]
 resource_local_to_scene = true
 script = ExtResource("2_m0t0m")
+effects = Array[ExtResource("1_0olkb")]([SubResource("Resource_asp74")])
 metadata/_custom_type_script = "uid://d3so4r078gt1m"

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="AbilityCondition" load_steps=2 format=3 uid="uid://b4t5ngfqe31ss"]
+
+[ext_resource type="Script" uid="uid://cxid1d8pxli00" path="res://scripts/resources/ability_condition.gd" id="1_t5m40"]
+
+[resource]
+script = ExtResource("1_t5m40")
+source_1 = 0
+operation = 2
+metadata/_custom_type_script = "uid://cxid1d8pxli00"

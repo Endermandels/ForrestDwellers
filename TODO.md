@@ -34,6 +34,7 @@
 ### Battle
 - The following applies to the player or animal whose turn it is:
 - Resolve start of turn effects (stun, etc.)
+- If the animal is dead, apply a Stench 1 effect on all allies and skip Attack phase
 - If it is the player's turn, choose which animal(s) to attack
 - Otherwise, choose which animal(s) to attack based on attack preference
 - If it is an enemy, it may offer to join the Player's group on its turn instead of attacking.  This is made more likely based on how low the enemy's health is.
@@ -60,18 +61,30 @@
 - MP (reduced when using a special ability or for a passive ability)
 - ITM (how many Items this unit can carry)
 
+## Stat Modifiers
+- DMG (reduce ARM if not PURE, then HP)
+- DRN (reduce MP)
+- SLW (reduce SPD)
+- WEAK (reduce ATK)
+- STR (increase ATK)
+- HEAL (restore HP)
+- REP (restore MP)
+
+## Passive Effects (in order)
+
 ## Start of Turn Effects (in order)
 - Stun X: Skip action phase. Reduce X by 1. When X is 0, remove.
 - Stench X: X/(if party member: 30 else: 10) chance to flee the confrontation. Reduce by 1. When X is 0, remove.
-- Intimidate X: Temporarily reduce ATK by X this turn.  Remove.
-- Rejuvinate X: Restore X MP. Reduce X by 1. When X is 0, remove.
+- Intimidate X: Apply X WEAK. Remove.
+- Rejuvinate X: Apply X REP. Reduce X by 1. When X is 0, remove.
 - Acid X: Remove X ARMOR or deal 1 DMG if ARMOR is already 0. Reduce X by 1. When X is 0, remove.
-- Burn X: Deal X DMG. Reduce X by 1.  When X is 0, remove.
+- Burn X: Apply X DMG. Reduce X by 1.  When X is 0, remove.
 - Fly X: Cannot interact with ground units until its next turn.  Reduce X by 1.  When X is 0, remove.
-- Regenerate X: Restore X HP. Reduce X by 1. When X is 0, remove.
+- Regenerate X: Apply X HEAL. Reduce X by 1. When X is 0, remove.
 - DEATH CHECK: If HP is 0, this animal is dead
 
 ## End of Turn Effects (in order)
+- Intimidate X: Restore ATK by X. Remove.
 - Bleed X: Deal X DMG (ignore ARMOR).  Reduce X by 1.  When X is 0, remove.
 - Poison X: Deal 1 DMG (ignore ARMOR).  Increase DMG dealt by 1 until DMG dealt is X.
 - DEATH CHECK: If HP is 0, this animal is dead

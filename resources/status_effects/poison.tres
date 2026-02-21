@@ -1,14 +1,19 @@
-[gd_resource type="Resource" script_class="StatusEffect" load_steps=5 format=3 uid="uid://bucifuquynswf"]
+[gd_resource type="Resource" script_class="StatusEffect" load_steps=7 format=3 uid="uid://bucifuquynswf"]
 
 [ext_resource type="Script" uid="uid://tvoob1gbfsk6" path="res://scripts/resources/effect.gd" id="1_7dgcr"]
 [ext_resource type="Script" uid="uid://d3so4r078gt1m" path="res://scripts/resources/status_effect.gd" id="1_bf4sn"]
 [ext_resource type="Script" uid="uid://dmsoeob5xvh4b" path="res://scripts/resources/effects/damage_effect.gd" id="2_at5yr"]
+[ext_resource type="Script" uid="uid://dftawdccftjb3" path="res://scripts/resources/target_rules/target_self.gd" id="3_at5yr"]
+
+[sub_resource type="Resource" id="Resource_rgrka"]
+script = ExtResource("3_at5yr")
+metadata/_custom_type_script = "uid://dftawdccftjb3"
 
 [sub_resource type="Resource" id="Resource_eikfg"]
 script = ExtResource("2_at5yr")
-dmg_change = 1
-dmg_max_is_stacks = true
+dmg_up_to_stacks = true
 pure = true
+target_rule = SubResource("Resource_rgrka")
 metadata/_custom_type_script = "uid://dmsoeob5xvh4b"
 
 [resource]

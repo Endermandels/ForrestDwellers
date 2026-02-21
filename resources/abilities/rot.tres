@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="Ability" load_steps=10 format=3 uid="uid://dt1gqj5tmkrqn"]
+
+[ext_resource type="Script" uid="uid://cxid1d8pxli00" path="res://scripts/resources/ability_condition.gd" id="1_domf7"]
+[ext_resource type="Script" uid="uid://tvoob1gbfsk6" path="res://scripts/resources/effect.gd" id="2_50rgl"]
+[ext_resource type="Resource" uid="uid://b4t5ngfqe31ss" path="res://resources/common_ability_conditions/is_dead.tres" id="2_gxiht"]
+[ext_resource type="Script" uid="uid://cpnyqxlyrdkj8" path="res://scripts/resources/ability.gd" id="3_gxiht"]
+[ext_resource type="Script" uid="uid://csrds5m07adnb" path="res://scripts/resources/effects/apply_status_effect.gd" id="4_cbxv2"]
+[ext_resource type="Resource" uid="uid://chdolvkf8nahe" path="res://resources/status_effects/stench.tres" id="5_iv71v"]
+[ext_resource type="Script" uid="uid://bp8vka3ks086n" path="res://scripts/resources/target_rules/target_all_allies.gd" id="6_fph53"]
+
+[sub_resource type="Resource" id="Resource_lud5o"]
+script = ExtResource("6_fph53")
+metadata/_custom_type_script = "uid://bp8vka3ks086n"
+
+[sub_resource type="Resource" id="Resource_abs67"]
+script = ExtResource("4_cbxv2")
+status_effect = ExtResource("5_iv71v")
+target_rule = SubResource("Resource_lud5o")
+metadata/_custom_type_script = "uid://csrds5m07adnb"
+
+[resource]
+script = ExtResource("3_gxiht")
+name_id = "Rot"
+triggers = Array[int]([1])
+conditions = Array[ExtResource("1_domf7")]([ExtResource("2_gxiht")])
+effects = Array[ExtResource("2_50rgl")]([SubResource("Resource_abs67")])
+metadata/_custom_type_script = "uid://cpnyqxlyrdkj8"

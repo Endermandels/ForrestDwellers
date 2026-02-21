@@ -1,10 +1,38 @@
-[gd_resource type="Resource" script_class="Ability" load_steps=4 format=3 uid="uid://bfp2ittujtucv"]
+[gd_resource type="Resource" script_class="Ability" load_steps=15 format=3 uid="uid://bfp2ittujtucv"]
 
 [ext_resource type="Script" uid="uid://cxid1d8pxli00" path="res://scripts/resources/ability_condition.gd" id="1_vmxum"]
 [ext_resource type="Script" uid="uid://tvoob1gbfsk6" path="res://scripts/resources/effect.gd" id="2_dpwea"]
+[ext_resource type="Resource" uid="uid://brolxwd0vwgwy" path="res://resources/common_ability_conditions/is_living.tres" id="2_r2dec"]
 [ext_resource type="Script" uid="uid://cpnyqxlyrdkj8" path="res://scripts/resources/ability.gd" id="3_kb6xh"]
+[ext_resource type="Resource" uid="uid://blbi3duog2roi" path="res://resources/common_ability_conditions/has_one_mana.tres" id="3_uah8m"]
+[ext_resource type="Script" uid="uid://dthhqofagiql1" path="res://scripts/resources/effects/drain_effect.gd" id="5_7verq"]
+[ext_resource type="Script" uid="uid://ctcvjr0gd1qjn" path="res://scripts/resources/target_rules/target_all_enemies.gd" id="5_jk6fe"]
+[ext_resource type="Script" uid="uid://dftawdccftjb3" path="res://scripts/resources/target_rules/target_self.gd" id="6_c2mwh"]
+[ext_resource type="Script" uid="uid://csrds5m07adnb" path="res://scripts/resources/effects/apply_status_effect.gd" id="7_p3q3c"]
+[ext_resource type="Resource" uid="uid://6plxyojw3xqt" path="res://resources/status_effects/intimidate.tres" id="8_jtl5y"]
+
+[sub_resource type="Resource" id="Resource_bu2ue"]
+script = ExtResource("6_c2mwh")
+metadata/_custom_type_script = "uid://dftawdccftjb3"
+
+[sub_resource type="Resource" id="Resource_kc4q1"]
+script = ExtResource("5_7verq")
+target_rule = SubResource("Resource_bu2ue")
+metadata/_custom_type_script = "uid://dthhqofagiql1"
+
+[sub_resource type="Resource" id="Resource_fihcc"]
+script = ExtResource("5_jk6fe")
+metadata/_custom_type_script = "uid://ctcvjr0gd1qjn"
+
+[sub_resource type="Resource" id="Resource_iycg8"]
+script = ExtResource("7_p3q3c")
+status_effect = ExtResource("8_jtl5y")
+target_rule = SubResource("Resource_fihcc")
+metadata/_custom_type_script = "uid://csrds5m07adnb"
 
 [resource]
 script = ExtResource("3_kb6xh")
 name_id = "Howl"
+conditions = Array[ExtResource("1_vmxum")]([ExtResource("2_r2dec"), ExtResource("3_uah8m")])
+effects = Array[ExtResource("2_dpwea")]([SubResource("Resource_kc4q1"), SubResource("Resource_iycg8")])
 metadata/_custom_type_script = "uid://cpnyqxlyrdkj8"
