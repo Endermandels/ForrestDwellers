@@ -36,10 +36,9 @@ func sort_units_queue() -> void:
 
 ## Populate abilities_queue with [trigger] abilities
 func populate_abilities_queue(trigger: Enums.Trigger, units: Array[Stats]) -> void:
-	var trigger_name = Enums.Trigger.keys()[trigger] # have to convert trigger to str using this line
 	print("* Populate Abilities queue")
 	for u in units:
-		for a in u.abilities_sorted[trigger_name]:
+		for a in u.abilities_sorted[Enums.get_trigger_name(trigger)]:
 			game_state.abilities_queue.append(a)
 
 ## Init each unit's stats
@@ -64,11 +63,11 @@ func stats_init(stats: Stats) -> void:
 
 ## Sort abilities by trigger
 func stats_sort_abilities(stats: Stats) -> void:
-	for trigger in Enums.Trigger:
-		stats.abilities_sorted[str(trigger)] = []
+	for trigger in Enums.Trigger.keys():
+		stats.abilities_sorted[trigger] = []
 	for a in stats.abilities:
 		for trigger in a.triggers:
-			stats.abilities_sorted[str(trigger)].append(a)
+			stats.abilities_sorted[Enums.get_trigger_name(trigger)].append(a)
 
 ## Exhaust [stats]
 func stats_exhaust(stats: Stats) -> void:
@@ -176,7 +175,7 @@ func step_attack() -> void:
 
 		# Trigger Wounded On Hurt Abilities
 		if not enemy_wounded_prev and engaged_enemy.is_wounded:
-			for a in engaged_enemy.abilities[Enums.Trigger.WOUNDED_ON_HURT]:
+			for a in engaged_enemy.abilities_sorted[Enums.get_trigger_name(Enums.Trigger.WOUNDED_ON_HURT)]:
 				game_state.abilities_queue.insert(game_state.cur_ability_idx + 1, a)
 
 		populate_abilities_queue(Enums.Trigger.ON_HIT, [unit])

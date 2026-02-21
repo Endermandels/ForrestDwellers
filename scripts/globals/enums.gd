@@ -26,6 +26,9 @@ enum Trigger {
     PASSIVE,
 }
 
+func get_trigger_name(trigger: Trigger) -> String:
+    return str(Trigger.keys()[trigger])
+
 enum BattleState {
     BATTLE_START,
     TURN_START,

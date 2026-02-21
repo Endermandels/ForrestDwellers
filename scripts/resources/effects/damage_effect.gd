@@ -31,7 +31,7 @@ func apply(_source: Stats, target: Stats, stacks: int = 0) -> void:
 		if not target.is_wounded:
 			target.is_wounded = true
 			# Trigger Wounded Abilities
-			for a in target.abilities[Enums.Trigger.WOUNDED]:
+			for a in target.abilities_sorted[Enums.get_trigger_name(Enums.Trigger.WOUNDED)]:
 				game_state.abilities_queue.insert(game_state.cur_ability_idx + 1, a)
 
 	if dmg_up_to_stacks:
