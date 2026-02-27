@@ -1,15 +1,13 @@
 extends Effect
 class_name DamageEffect
 
-@export var dmg: int = 1
-@export var dmg_per_stack: int = 0 ## how much damage is dealt per stack left
-@export var dmg_up_to_stacks: bool = false ## whether to increase DMG up to Stacks
+@export var dmg_per_stack: int = 1 ## how much DMG is dealt per stack left
 @export var pure: bool = false ## whether to ignore armor
 
-func apply(_source: Stats, target: Stats, stacks: int = 0) -> void:
+func apply(_source: Stats, target: Stats, stacks: int = 1) -> void:
 	var game_state = BattleLogic.game_state
 	var remaining_dmg = 0
-	var dmg_to_apply = dmg + (dmg_per_stack * stacks) # Modify DMG with stacks
+	var dmg_to_apply = dmg_per_stack * stacks
 
 	dmg_to_apply = max(dmg_to_apply, 0) # Do at least 0 DMG
 	
@@ -33,6 +31,3 @@ func apply(_source: Stats, target: Stats, stacks: int = 0) -> void:
 			# Trigger Wounded Abilities
 			for a in target.abilities_sorted[Enums.get_trigger_name(Enums.Trigger.WOUNDED)]:
 				game_state.abilities_queue.insert(game_state.cur_ability_idx + 1, a)
-
-	if dmg_up_to_stacks:
-		dmg = min(dmg + 1, stacks) # Increase DMG up to stacks

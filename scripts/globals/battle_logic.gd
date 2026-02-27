@@ -68,6 +68,7 @@ func stats_sort_abilities(stats: Stats) -> void:
 	for a in stats.abilities:
 		for trigger in a.triggers:
 			stats.abilities_sorted[Enums.get_trigger_name(trigger)].append(a)
+		a.unit_ref = stats
 
 ## Exhaust [stats]
 func stats_exhaust(stats: Stats) -> void:
@@ -106,6 +107,12 @@ func stats_apply_ability_effects(stats: Stats, ability: Ability, units_queue: Ar
 	for e in ability.effects:
 		for t in e.target_rule.get_targets(stats, units_queue):
 			e.apply(stats, t)
+
+func stats_apply_status_effects(stats: Stats, status_effect: StatusEffect) -> void:
+	print("* [%s] was affected with %s" % [stats.name_id, status_effect.name_id])
+	for e in status_effect.effects:
+		for t in e.target_rule.get_targets(stats, [stats]):
+			e.apply(stats, t)
 #endregion
 
 #region State Machine
@@ -141,10 +148,10 @@ func step_battle_start() -> void:
 
 		stats_apply_ability_effects(unit, ability, game_state.units_queue)
 	else:
-		game_state.battle_state = Enums.BattleState.TURN_START
+		game_state.battle_state = Enums.BattleState.TURN_START_ABILITIES
 		game_state.cur_unit = game_state.units_queue.pop_front()
 		print("~~~ [%s] Turn Start ~~~" % game_state.cur_unit)
-		populate_abilities_queue(Enums.Trigger.TURN_START, game_state.units_queue)
+		populate_abilities_queue(Enums.Trigger.TURN_START, [game_state.cur_unit])
 
 func step_turn_start() -> void:
 	if check_battle_resolution(): return
@@ -161,6 +168,20 @@ func step_turn_start() -> void:
 		game_state.attack_queue = targets
 		print("~~~ [%s] Attack ~~~" % game_state.cur_unit)
 
+# func step_turn_start_status_effects() -> void:
+# 	if check_battle_resolution(): return
+	
+# 	if game_state.status_effects_queue.size() > 0:
+# 		var status_effect: StatusEffect = game_state.status_effects_queue.pop_front()
+
+# 		stats_apply_status_effects(game_state.cur_unit, status_effect)
+# 	else:
+# 		game_state.battle_state = Enums.BattleState.ATTACK
+# 		var unit: Stats = game_state.cur_unit
+# 		var targets: Array[Stats] = unit.target_rule.get_targets(unit, game_state.units_queue)
+# 		game_state.attack_queue = targets
+# 		print("~~~ [%s] Attack ~~~" % game_state.cur_unit)
+
 func step_attack() -> void:
 	if check_battle_resolution(): return
 	
@@ -168,10 +189,11 @@ func step_attack() -> void:
 		var engaged_enemy: Stats = game_state.attack_queue.pop_front()
 		var unit: Stats = game_state.cur_unit
 
+		unit.engaged_enemy = engaged_enemy
+
 		var enemy_wounded_prev = engaged_enemy.is_wounded
 		var dmg_effect: DamageEffect = DamageEffect.new()
-		dmg_effect.dmg = unit.atk
-		dmg_effect.apply(unit, engaged_enemy)
+		dmg_effect.apply(unit, engaged_enemy, unit.atk)
 
 		# Trigger Wounded On Hurt Abilities
 		if not enemy_wounded_prev and engaged_enemy.is_wounded:
@@ -183,7 +205,7 @@ func step_attack() -> void:
 
 		game_state.battle_state = Enums.BattleState.ATTACK_RESOLUTION
 	else:
-		game_state.battle_state = Enums.BattleState.TURN_END
+		game_state.battle_state = Enums.BattleState.TURN_END_ABILITIES
 		print("~~~ [%s] Turn End ~~~" % game_state.cur_unit)
 		if not game_state.cur_unit.is_dead:
 			game_state.units_queue.append(game_state.cur_unit)
@@ -213,13 +235,13 @@ func advance_battle_state(_input_cmp: InputComponent) -> void:
 
 	if game_state.battle_state == Enums.BattleState.BATTLE_START:
 		step_battle_start()
-	elif game_state.battle_state == Enums.BattleState.TURN_START:
+	elif game_state.battle_state == Enums.BattleState.TURN_START_ABILITIES:
 		step_turn_start()
 	elif game_state.battle_state == Enums.BattleState.ATTACK:
 		step_attack()
 	elif game_state.battle_state == Enums.BattleState.ATTACK_RESOLUTION:
 		step_attack_resolution()
-	elif game_state.battle_state == Enums.BattleState.TURN_END:
+	elif game_state.battle_state == Enums.BattleState.TURN_END_ABILITIES:
 		step_turn_end()
 	elif game_state.battle_state == Enums.BattleState.BATTLE_RESOLUTION:
 		step_battle_resolution()

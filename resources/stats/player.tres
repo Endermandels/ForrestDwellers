@@ -16,5 +16,6 @@ is_player = true
 is_enemy = false
 target_rule = SubResource("Resource_o5tii")
 base_hp = 20
+base_atk = 0
 base_itm = 8
 metadata/_custom_type_script = "uid://cuxqv41brtwff"

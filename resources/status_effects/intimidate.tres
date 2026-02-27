@@ -17,5 +17,6 @@ metadata/_custom_type_script = "uid://b7q1hnywkunal"
 [resource]
 resource_local_to_scene = true
 script = ExtResource("2_m0t0m")
+name_id = "Intimidate"
 effects = Array[ExtResource("1_0olkb")]([SubResource("Resource_asp74")])
 metadata/_custom_type_script = "uid://d3so4r078gt1m"

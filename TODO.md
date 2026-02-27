@@ -46,7 +46,7 @@
 - When an animal or player levels up, their stats increase (except MP)
 - Some animals drop different items (pelts, teeth, etc.) used for trading with the trader
 ### Event #1
-- Campfire: Heal a party member (HP and MP restored).  May heal another party member, but if you do there is a risk that it will be healed halfway and Event #2 will be skipped.
+- Campfire: Heal all but one party members (HP and MP restored).  May heal last party member, but if you do there is a risk that enemies will ambush you, skipping Event #2.
 ### Event #2
 - Trader: May trade animal loot for items (like in He Is Coming).
 - Blue Fairy: Offer to increase a chosen party member's MP.  However, it may be a trick fairy which will also drain your party member's MP to half.

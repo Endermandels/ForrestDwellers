@@ -31,10 +31,12 @@ func get_trigger_name(trigger: Trigger) -> String:
 
 enum BattleState {
     BATTLE_START,
-    TURN_START,
+    TURN_START_ABILITIES,
+    TURN_START_STATUS_EFFECTS,
     ATTACK,
     ATTACK_RESOLUTION,
-    TURN_END,
+    TURN_END_ABILITIES,
+    TURN_END_STATUS_EFFECTS,
     BATTLE_RESOLUTION,
 }
 

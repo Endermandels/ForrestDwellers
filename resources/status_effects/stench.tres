@@ -17,5 +17,6 @@ metadata/_custom_type_script = "uid://dmsoeob5xvh4b"
 
 [resource]
 script = ExtResource("2_25cqm")
+name_id = "Stench"
 effects = Array[ExtResource("1_gdogu")]([SubResource("Resource_2y5ko")])
 metadata/_custom_type_script = "uid://d3so4r078gt1m"

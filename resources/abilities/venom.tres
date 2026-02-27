@@ -34,6 +34,7 @@ metadata/_custom_type_script = "uid://csrds5m07adnb"
 [resource]
 script = ExtResource("3_7afc8")
 name_id = "Venom"
+triggers = Array[int]([4])
 conditions = Array[ExtResource("1_mnxqt")]([ExtResource("2_dou1h"), ExtResource("2_66vwr"), ExtResource("3_dou1h")])
 effects = Array[ExtResource("2_dbtjg")]([SubResource("Resource_hvwmn"), SubResource("Resource_geifv")])
 metadata/_custom_type_script = "uid://cpnyqxlyrdkj8"
